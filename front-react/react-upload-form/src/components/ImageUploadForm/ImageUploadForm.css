@@ -1,0 +1,152 @@
+:root {
+    /* --primary-color: #a7c1a7; */
+    --primary-color: #b1ceb2;
+}
+
+/* .form-background{
+    background-color: rgb(165, 165, 165);
+    width: 100vw;
+    height: 60vh;
+} */
+
+.wallpaper-deepmind {
+    max-width: 100%;
+    height: auto;
+    left: 0px;
+    right: 0px;
+}
+
+#deepmind-wpp{
+    width: 100vw;
+    height: auto;
+    left: 0px;
+    right: 0px;
+}
+
+.main{
+    display: flex;
+    flex-direction: column;
+
+    width: 100%;
+    height: 100%;
+    
+    justify-content: center;
+    align-items: center;
+
+    font: 14pt Arial;
+
+    color: #fff;
+
+    padding: 2em 0 3em 0;
+}
+
+/* .wrapper-form{
+
+    width: 100vw;
+    height: fit-content;
+    
+    
+    border: 6px solid #395539;
+    border-radius: 16px;
+    
+    display: flex;
+    flex-direction: column;
+    
+    justify-content: center;
+    align-items: center;
+
+    background-color: var(--primary-color);
+
+    box-shadow: #a7c1a7e0 1px 1px 2px 2px;
+
+    margin-top: -10vh;
+
+    font-weight: 700;
+    padding: 1em;
+} */
+
+
+.wrapper-form {
+    width: 100%;
+    height: fit-content;
+    /* border: 2px solid #468546; */
+    border-radius: 16px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    background-color: var(--primary-color);
+    box-shadow: #a7c1a7e0 1px 1px 2px 2px;
+    font-weight: 700;
+    padding: 1em;
+}
+
+.wrapper-form form {
+    display: flex;
+    flex-direction: column;
+
+    justify-content: center;
+
+    align-items: center;
+
+    /* color: #000000 */
+    
+}
+
+.wrapper-form form fieldset{
+    width: 25em;
+    
+    height: 80%;
+
+    border: 1px solid black;
+    border-radius: 8px;
+
+    display: flex;
+    flex-direction: column;
+
+    justify-content: center;
+
+    /* padding: 1.5em 1.25em; */
+
+    margin: 1em 0;
+
+    background-color: var(--primary-color);
+}
+
+.wrapper-form form input {
+    width: 100%;
+    height: 3em;
+
+    border: 0;
+    border-radius: 5px;
+
+    border:0;
+    outline:0;
+
+    background-color: var(--primary-color);
+    color: #fff;
+}
+
+input[type="text"], textarea {
+
+    background-color : #d1d1d1; 
+  
+}
+
+
+.btn {
+    background-color: #ffffff;
+    width: 100%;
+    height: 5vh;
+
+    padding: 1em 1em 2em 1em;
+
+    border: 1px solid black;
+    border-radius: 5px;
+        
+    font-weight: bold;
+    font-size: 1.2rem;
+    
+    cursor: pointer;
+    text-transform: uppercase;
+}

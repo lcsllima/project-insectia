@@ -10,3 +10,9 @@ class Insect(models.Model):
     image = models.ForeignKey(InsectImage, on_delete=models.CASCADE, related_name='insect_image')
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
+
+class AnalyzeStatus(models.Model):
+    status = models.CharField(max_length=100)
+    sha256code = 
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)

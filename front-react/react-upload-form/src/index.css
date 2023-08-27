@@ -5,6 +5,12 @@ body {
     sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+
+  /* background-image: url('/public/pexels-jake-heinemann-1482101.jpg'); */
+  background-color: #a7c1a7;
+
+  color: #fff;
+  font-family: Arial, Helvetica, sans-serif;
 }
 
 code {
