@@ -25,7 +25,6 @@ const ImageUploadForm = () => {
 
   return (
     <div className="main">
-      <div className="wrapper-component">
         <div className="wrapper-form">
           <div className="wrapper">
             <div className="wrapper-text">
@@ -49,7 +48,6 @@ const ImageUploadForm = () => {
           {/* <div className="wallpaper-deepmind"><img id="deepmind-wpp" src="/pexels-google-deepmind-18069365.jpg"></img> </div>
           */}
           {/* <div className="form-background"></div> */}
-        </div>
     </div>
   );
 };

@@ -26,3 +26,28 @@
     border-radius: 36px;
     padding: 2em;
 }
+
+
+@media screen and (max-width: 800px) {
+  
+    .header-nav-bar {
+        height: 10em;
+        display: flex;
+        flex-direction: column;
+
+        border-bottom: 2px solid #fff;
+        padding: 1em;
+    }
+
+    .header-nav-bar h1 {
+        padding: 0.25em;
+        position: relative;
+    }
+
+    .site-search {
+        width: 80vw;
+    }
+    
+}
+  
+  

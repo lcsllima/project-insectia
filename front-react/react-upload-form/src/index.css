@@ -6,12 +6,25 @@ body {
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 
-  /* background-image: url('/public/pexels-jake-heinemann-1482101.jpg'); */
-  background-color: #a7c1a7;
+  background-image: url('/public/pexels-jake-heinemann-1482101.jpg');
+  background-size: cover;
+  background-repeat: no-repeat;
+
+  /* background-color: #a7c1a7; */
 
   color: #fff;
   font-family: Arial, Helvetica, sans-serif;
 }
+
+@media screen and (max-width: 800px) {
+  body {
+    background-image: url('/public/pexels-lisa-fotios-18005299.jpg');
+    background-size: cover;
+    background-repeat: no-repeat;
+  }
+  
+}
+
 
 code {
   font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
