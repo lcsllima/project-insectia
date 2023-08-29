@@ -9,14 +9,22 @@ const ImageUploadForm = () => {
     
     const formData = new FormData(e.target);
     
+    console.log(formData);
     try {
       const response = await fetch("http://localhost:8000/apis/insect-images/", {
         method: "POST",
         body: formData,
       });
 
+      
+
       const responseData = await response.json();
       setResponseMessage(responseData.message);
+
+      // Gerar um função que a cada 30 segundos verifica se a imagem já foi processada
+      // Usando o URL do http://localhost:8000/apis/analyze-status/ com o email do usuário
+
+      
     } catch (error) {
       console.error(error);
       setResponseMessage('Ocorreu um erro ao enviar a imagem.');
@@ -38,8 +46,8 @@ const ImageUploadForm = () => {
               <input type="file" name="image" accept="image/*" />
             </fieldset>
             <fieldset>
-              <legend htmlFor="e-mail">E-mail</legend>
-              <input type="email" name="e-mail" />
+              <legend htmlFor="email">E-mail</legend>
+              <input type="email" name="email" />
             </fieldset>
             <button className="btn btn-submit" type="submit">Enviar</button>
           </form>

@@ -1,6 +1,7 @@
 from django.db import models
 
 class InsectImage(models.Model):
+    email = models.CharField(max_length=100, null=True)  # pode ser nulo
     image = models.ImageField(upload_to='images/')
     uploaded_at = models.DateTimeField(auto_now_add=True)
 
@@ -13,6 +14,6 @@ class Insect(models.Model):
 
 class AnalyzeStatus(models.Model):
     status = models.CharField(max_length=100)
-    sha256code = 
+    email = models.CharField(max_length=255, null=True)  # pode ser nulo
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
