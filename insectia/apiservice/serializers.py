@@ -3,8 +3,22 @@ from .models import Insect, InsectImage, AnalyzeStatus
 import threading
 
 
+# import numpy as np
+# import tensorflow as tf
+# from tensorflow.keras.applications import InceptionV3
+# from tensorflow.keras.models import Sequential
+# from tensorflow.keras.layers import Dense, Embedding, LSTM
+# from tensorflow.keras.preprocessing.image import load_img, img_to_array
+# from tensorflow.keras.preprocessing.text import Tokenizer
+# from tensorflow.keras.preprocessing.sequence import pad_sequences
+# from tensorflow.keras.models import Model
+# from tensorflow.keras.layers import Dense, GlobalAveragePooling2D
+# from tensorflow.keras.applications.inception_v3 import preprocess_input
+# from tensorflow.keras.preprocessing import image
+
 # Lock para evitar que duas threads acessem o mesmo recurso ao mesmo tempo
 lock = threading.Lock()
+# base_model = InceptionV3(weights='imagenet', include_top=False)
 
 class InsectImageSerializer(serializers.ModelSerializer):
     class Meta:
