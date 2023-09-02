@@ -3,22 +3,44 @@ from .models import Insect, InsectImage, AnalyzeStatus
 import threading
 
 
-# import numpy as np
-# import tensorflow as tf
-# from tensorflow.keras.applications import InceptionV3
-# from tensorflow.keras.models import Sequential
-# from tensorflow.keras.layers import Dense, Embedding, LSTM
-# from tensorflow.keras.preprocessing.image import load_img, img_to_array
-# from tensorflow.keras.preprocessing.text import Tokenizer
-# from tensorflow.keras.preprocessing.sequence import pad_sequences
-# from tensorflow.keras.models import Model
-# from tensorflow.keras.layers import Dense, GlobalAveragePooling2D
-# from tensorflow.keras.applications.inception_v3 import preprocess_input
-# from tensorflow.keras.preprocessing import image
+from PIL import Image
+import torch
+import torchvision.transforms as transforms
+from torchvision.datasets import ImageFolder
+import torch.nn as nn
+
+import os
+
+class InsectClassifier(nn.Module):
+    def __init__(self, num_classes):
+        super(InsectClassifier, self).__init__()
+        
+        # Camadas convolucionais
+        self.conv_layers = nn.Sequential(
+            nn.Conv2d(in_channels=3, out_channels=16, kernel_size=3, padding=1),
+            nn.ReLU(),
+            nn.MaxPool2d(kernel_size=2, stride=2),
+            nn.Conv2d(in_channels=16, out_channels=32, kernel_size=3, padding=1),
+            nn.ReLU(),
+            nn.MaxPool2d(kernel_size=2, stride=2),
+        )
+        
+        # Camadas totalmente conectadas
+        self.fc_layers = nn.Sequential(
+            nn.Linear(32 * 56 * 56, 128),  # Correção no tamanho do tensor de entrada
+            nn.ReLU(),
+            nn.Linear(128, num_classes)
+        )
+    def forward(self, x):
+        x = self.conv_layers(x)
+        x = x.view(x.size(0), -1)  # Achatando o tensor para a camada totalmente conectada
+        x = self.fc_layers(x)
+        return x
+
 
 # Lock para evitar que duas threads acessem o mesmo recurso ao mesmo tempo
 lock = threading.Lock()
-# base_model = InceptionV3(weights='imagenet', include_top=False)
+
 
 class InsectImageSerializer(serializers.ModelSerializer):
     class Meta:
@@ -32,18 +54,25 @@ class InsectImageSerializer(serializers.ModelSerializer):
     
     def create(self, validated_data):
         # Gerar um novo AnalyzeStatus
-        email_exist = self.context['request'].data['email']
+        email_content = None
+        # Confere se existe o data['email']
+        if 'email' in self.context['request'].data:
+            email_exist = self.context['request'].data['email']
+            if email_exist:
+                email_content = email_exist
         image_content = self.context['request'].data['image']
-        if email_exist:
-            email_content = email_exist
 
         analyze_status = AnalyzeStatus.objects.create(status='pending', email=email_content)
         analyze_status.save()
 
-        # Cria uma nova thread para processar a imagem
-        thread = threading.Thread(target=processar_imagem_com_o_modelo, args=(image_content, analyze_status))
+        instance = super(InsectImageSerializer, self).create(validated_data)
+        insect_image_id = instance.id
 
-        return InsectImage.objects.create(**validated_data)
+        # Cria uma nova thread para processar a imagem
+        # thread = threading.Thread(target=processar_imagem_com_o_modelo, args=(image_content, insect_image_id, analyze_status.id))
+        processar_imagem_com_o_modelo(image_content, insect_image_id, analyze_status.id)
+        return instance
+        # return InsectImage.objects.create(**validated_data)
     
 class AnalyzeStatusSerializer(serializers.ModelSerializer):
     class Meta:
@@ -57,5 +86,58 @@ class AnalyzeStatusSerializer(serializers.ModelSerializer):
         return fields
 
 # Mudar o nome da função para algo que faça mais sentido
-def processar_imagem_com_o_modelo(image):
-    pass
+def processar_imagem_com_o_modelo(image_path, insect_image_id, analyze_status_id):
+    device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
+
+    # Caminho para a pasta que contém as subpastas das classes
+    data_dir = "/insectia/apiservice/model_classes"
+
+    # Define as transformações para pré-processamento das imagens
+    data_transforms = transforms.Compose([
+        transforms.Resize((224, 224)),
+        transforms.ToTensor(),
+        transforms.Normalize(mean=[0.485, 0.456, 0.406], std=[0.229, 0.224, 0.225])
+    ])
+
+    # Carrega os dados usando ImageFolder
+    dataset = ImageFolder(data_dir, transform=data_transforms)
+
+    # Carregar o modelo treinado
+    model = InsectClassifier(3)
+    model.load_state_dict(torch.load("/insectia/apiservice/trained_models/modelo_treinado.pth"))
+    model.to(device)
+    model.eval()
+
+    # Carregar e pré-processar a imagem de entrada
+    image = Image.open('/insectia/images/google334.jpg').convert("RGB") # Está com hardcode para teste, remover e usar o parâmtro image_path
+    # image = Image.open(image_path).convert("RGB")
+    data_transform = transforms.Compose([
+        transforms.Resize((224, 224)),
+        transforms.ToTensor(),
+        transforms.Normalize(mean=[0.485, 0.456, 0.406], std=[0.229, 0.224, 0.225])
+    ])
+
+    input_image = data_transform(image).unsqueeze(0).to(device)
+
+    # Fazer a previsão
+    with torch.no_grad():
+        outputs = model(input_image)
+        predicted_class = torch.argmax(outputs, dim=1).item()
+
+    # Mapear o índice da classe para o nome da classe
+    class_names = dataset.classes
+    predicted_class_name = class_names[predicted_class]
+
+    # Atualizar o AnalyzeStatus
+    with lock:
+        analyze_status = AnalyzeStatus.objects.get(id=analyze_status_id)
+        analyze_status.status = 'done'
+        analyze_status.save()
+        # Atualizar o InsectImage
+        insect_image = InsectImage.objects.get(id=insect_image_id)
+        insect_image.predicted_class = predicted_class_name
+        insect_image.save()
+
+
+    # print(f"A imagem pertence à classe: {predicted_class_name}")
+

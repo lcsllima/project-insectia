@@ -4,6 +4,7 @@ class InsectImage(models.Model):
     email = models.CharField(max_length=100, null=True)  # pode ser nulo
     image = models.ImageField(upload_to='images/')
     uploaded_at = models.DateTimeField(auto_now_add=True)
+    predicted_class = models.CharField(max_length=100, null=True)  # pode ser nulo
 
 class Insect(models.Model):
     name = models.CharField(max_length=100)
