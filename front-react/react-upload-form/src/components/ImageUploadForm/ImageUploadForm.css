@@ -155,3 +155,12 @@ input[type="text"], textarea {
     cursor: pointer;
     text-transform: uppercase;
 }
+
+.api-result {
+    
+}
+
+.no-response {
+    display: none;
+}
+
