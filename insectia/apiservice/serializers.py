@@ -50,6 +50,7 @@ class InsectImageSerializer(serializers.ModelSerializer):
     def get_fields(self, *args, **kwargs):
         fields = super(InsectImageSerializer, self).get_fields(*args, **kwargs)
         fields['image'] = serializers.ImageField(max_length=None, allow_empty_file=False, use_url=True)
+        fields['predicted_class'] = serializers.CharField(max_length=100, read_only=True) # predicted_class é read_only
         return fields
     
     def create(self, validated_data):
@@ -62,16 +63,33 @@ class InsectImageSerializer(serializers.ModelSerializer):
                 email_content = email_exist
         image_content = self.context['request'].data['image']
 
-        analyze_status = AnalyzeStatus.objects.create(status='pending', email=email_content)
-        analyze_status.save()
 
-        instance = super(InsectImageSerializer, self).create(validated_data)
-        insect_image_id = instance.id
+        # ------ Teste --------
+        # Aqui estive usando uma thread, talvez nem seja necessário, já que o modelo por hora está respondendo em menos de 1 segundo
+
+        # analyze_status = AnalyzeStatus.objects.create(status='pending', email=email_content)
+        # analyze_status.save()
+
+        # instance = super(InsectImageSerializer, self).create(validated_data) # Cria nosso item, mas é interessante quando for usar a thread
+        # insect_image_id = instance.id
 
         # Cria uma nova thread para processar a imagem
         # thread = threading.Thread(target=processar_imagem_com_o_modelo, args=(image_content, insect_image_id, analyze_status.id))
-        processar_imagem_com_o_modelo(image_content, insect_image_id, analyze_status.id)
+        
+
+        # ------ Teste -------- 
+        # se o desempenho do modelo for satisfátório em tempo de resposta, não é necessário usar thread
+
+        # Atualizar o instance com o predicted_class para o usuário, antes de retornar  (InsectImage)
+        predicted_class = processar_imagem_com_o_modelo_e_retornar(image_content)
+        validated_data['predicted_class'] = predicted_class
+
+        # Salvar a instancia com a classe predita
+        instance = super(InsectImageSerializer, self).create(validated_data) # Cria nosso item, mas é interessante quando for usar a thread
+        insect_image_id = instance.id
+
         return instance
+
         # return InsectImage.objects.create(**validated_data)
     
 class AnalyzeStatusSerializer(serializers.ModelSerializer):
@@ -85,7 +103,52 @@ class AnalyzeStatusSerializer(serializers.ModelSerializer):
         fields['email'] = serializers.CharField(max_length=100)
         return fields
 
-# Mudar o nome da função para algo que faça mais sentido
+
+def processar_imagem_com_o_modelo_e_retornar(image_path):
+    device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
+
+    # Caminho para a pasta que contém as subpastas das classes
+    data_dir = "/insectia/apiservice/model_classes"
+
+    # Define as transformações para pré-processamento das imagens
+    data_transforms = transforms.Compose([
+        transforms.Resize((224, 224)),
+        transforms.ToTensor(),
+        transforms.Normalize(mean=[0.485, 0.456, 0.406], std=[0.229, 0.224, 0.225])
+    ])
+
+    # Carrega os dados usando ImageFolder
+    dataset = ImageFolder(data_dir, transform=data_transforms)
+
+    # Carregar o modelo treinado
+    model = InsectClassifier(3)
+    model.load_state_dict(torch.load("/insectia/apiservice/trained_models/modelo_treinado.pth"))
+    model.to(device)
+    model.eval()
+
+    # Carregar e pré-processar a imagem de entrada
+    # image = Image.open('/insectia/images/google334.jpg').convert("RGB") # Está com hardcode para teste, remover e usar o parâmtro image_path
+    image = Image.open(image_path).convert("RGB")
+    # image = Image.open(image_path).convert("RGB")
+    data_transform = transforms.Compose([
+        transforms.Resize((224, 224)),
+        transforms.ToTensor(),
+        transforms.Normalize(mean=[0.485, 0.456, 0.406], std=[0.229, 0.224, 0.225])
+    ])
+
+    input_image = data_transform(image).unsqueeze(0).to(device)
+
+    # Fazer a previsão
+    with torch.no_grad():
+        outputs = model(input_image)
+        predicted_class = torch.argmax(outputs, dim=1).item()
+
+    # Mapear o índice da classe para o nome da classe
+    class_names = dataset.classes
+
+    return class_names[predicted_class]
+
+
 def processar_imagem_com_o_modelo(image_path, insect_image_id, analyze_status_id):
     device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 
@@ -109,7 +172,8 @@ def processar_imagem_com_o_modelo(image_path, insect_image_id, analyze_status_id
     model.eval()
 
     # Carregar e pré-processar a imagem de entrada
-    image = Image.open('/insectia/images/google334.jpg').convert("RGB") # Está com hardcode para teste, remover e usar o parâmtro image_path
+    # image = Image.open('/insectia/images/google334.jpg').convert("RGB") # Está com hardcode para teste, remover e usar o parâmtro image_path
+    image = Image.open(image_path).convert("RGB")
     # image = Image.open(image_path).convert("RGB")
     data_transform = transforms.Compose([
         transforms.Resize((224, 224)),
@@ -138,6 +202,7 @@ def processar_imagem_com_o_modelo(image_path, insect_image_id, analyze_status_id
         insect_image.predicted_class = predicted_class_name
         insect_image.save()
 
+    return predicted_class_name
 
     # print(f"A imagem pertence à classe: {predicted_class_name}")
 
