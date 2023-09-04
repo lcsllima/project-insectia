@@ -120,8 +120,11 @@ def processar_imagem_com_o_modelo_e_retornar(image_path):
     # Carrega os dados usando ImageFolder
     dataset = ImageFolder(data_dir, transform=data_transforms)
 
+    # Calcula a quantidade de classes baseado na pasta que contém as subpastas das classes
+    num_classes = len(os.listdir(data_dir))
+
     # Carregar o modelo treinado
-    model = InsectClassifier(3)
+    model = InsectClassifier(num_classes)
     model.load_state_dict(torch.load("/insectia/apiservice/trained_models/modelo_treinado.pth"))
     model.to(device)
     model.eval()

@@ -39,10 +39,10 @@ const ImageUploadForm = () => {
 
       if (wrapper_result != null) {
         // Se o response já não foi removido
-        if(!wrapper_result.classList.contains('no-response')) {
+        if(wrapper_result.classList.contains('no-response')) {
           wrapper_result.classList.toggle('no-response');
         }
-        
+
         const result_placeholder = document.querySelector('.result-placeholder');
         result_placeholder.innerText = response_result;
       } else {
