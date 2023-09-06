@@ -4,6 +4,27 @@ import './ImageUploadForm.css'
 const ImageUploadForm = () => {
   const [responseMessage, setResponseMessage] = useState('');
 
+
+  window.onload = function() {
+    const fileInput = document.querySelector('#image-input');
+    const imagePreview = document.getElementById('image-preview');
+  
+  
+    fileInput.addEventListener('change', function() {
+      const file = this.files[0];
+  
+      if(file) {
+        const reader = new FileReader();
+  
+        reader.onload = function(e) {
+          imagePreview.src = e.target.result;
+        };
+  
+        reader.readAsDataURL(fileInput.files[0]);
+      }
+    });
+  }
+ 
   const handleFormSubmit = async (e) => {
     e.preventDefault();
     
@@ -69,7 +90,8 @@ const ImageUploadForm = () => {
           <form onSubmit={handleFormSubmit} encType="multipart/form-data">
             <fieldset>
               <legend htmlFor="image">Imagem</legend>
-              <input type="file" name="image" accept="image/*" />
+              <img id="image-preview" src="#" alt="" />
+              <input id="image-input" type="file" name="image" accept="image/*" />
             </fieldset>
             <fieldset>
               <legend htmlFor="email">E-mail</legend>
@@ -85,8 +107,8 @@ const ImageUploadForm = () => {
 
           <div className="wrapper api-result no-response">
             <div className="wrapper-text">
-              <h1>Se trata de um:</h1>
-              <p class="result-placeholder"></p>
+              <h3>Se trata de um:</h3>
+              <h2 className="result-placeholder"></h2>
             </div>
           </div>
     </div>

@@ -156,11 +156,38 @@ input[type="text"], textarea {
     text-transform: uppercase;
 }
 
-.api-result {
+/* .api-result {
     
-}
+} */
 
 .no-response {
     display: none;
 }
+/* 
+.api-result {
+    border: 1px solid #ccc;
+    display: flex;
+    padding: 1em;
+} */
 
+.wrapper.api-result {
+    margin: 1em;
+    border: 1px solid #cccccc0f;
+    background-color: var(--primary-color-blur);
+    border-radius: 5px;
+    padding: 2em;
+}
+
+.wrapper.api-result .wrapper-text {
+    display: flex;
+    flex-direction: row;
+}
+
+.result-placeholder {
+    margin: auto 1em;
+    font: 16pt Arial;
+}
+
+#image-preview {
+    width: 4em;
+}
