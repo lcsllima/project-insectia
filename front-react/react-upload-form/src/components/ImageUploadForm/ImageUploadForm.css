@@ -99,8 +99,9 @@
 }
 
 .wrapper-form form fieldset{
-    width: 25em;
-    
+    /* width: 25em; */
+    width: 20em;
+
     height: 80%;
 
     border: 1px solid black;
@@ -141,7 +142,10 @@ input[type="text"], textarea {
 
 .btn {
     background-color: #ffffff;
-    width: 100%;
+    /* width: 100%; */
+
+    width: 10em;
+
     height: 5vh;
 
     padding: 1em 1em 2em 1em;
@@ -188,6 +192,68 @@ input[type="text"], textarea {
     font: 16pt Arial;
 }
 
-#image-preview {
+/* #image-preview {
     width: 4em;
+} */
+
+#image-preview {
+    width: 10em;
+    margin: auto;
+    border-radius: 17px;
+    box-shadow: 5px 4px 4px 1px #000;
+}
+
+.loader {
+    border: 12px solid #ffffff40;
+    border-radius: 50%;
+    border-top: 12px solid #020202;
+    width: 2em;
+    height: 2em;
+    animation: spin 0.75s linear infinite;
+    margin: 1em;
+}
+  
+/* Safari */
+@-webkit-keyframes spin {
+0% { -webkit-transform: rotate(0deg); }
+100% { -webkit-transform: rotate(360deg); }
+}
+
+@keyframes spin {
+0% { transform: rotate(0deg); }
+100% { transform: rotate(360deg); }
+}
+
+.hidden {
+    display: none !important;
+}
+
+
+ /* Estilo para o botão de upload */
+.custom-upload-button {
+    background-color: #fff0;
+    color: #fff;
+    padding: 1em;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    display: flex;
+    flex-direction: column;
+    gap: 2em;
+}
+
+/* Estilo para a mensagem de instrução */
+.upload-instructions {
+    font-size: 14px;
+    margin-top: 10px;
+}
+
+/* Estilize o input do tipo file (oculto) */
+#image-input {
+    display: none;
+}
+
+.wrapper-image-description {
+    display: flex;
+    flex-direction: column;
 }

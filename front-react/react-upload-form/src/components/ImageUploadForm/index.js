@@ -6,9 +6,29 @@ const ImageUploadForm = () => {
 
 
   window.onload = function() {
+
+    const uploadLabel = document.querySelector('label[for="image-input"]');
     const fileInput = document.querySelector('#image-input');
     const imagePreview = document.getElementById('image-preview');
   
+    uploadLabel.addEventListener("dragover", function (e) {
+      e.preventDefault();
+    });
+
+    uploadLabel.addEventListener("drop", function (e) {
+        e.preventDefault();
+        const file = e.dataTransfer.files[0];
+        if (file && file.type.startsWith("image/")) {
+            const reader = new FileReader();
+            reader.onload = function (e) {
+                imagePreview.classList.remove('hidden');
+                imagePreview.src = e.target.result;
+            };
+            reader.readAsDataURL(file);
+        }
+    });
+  
+
   
     fileInput.addEventListener('change', function() {
       const file = this.files[0];
@@ -17,6 +37,7 @@ const ImageUploadForm = () => {
         const reader = new FileReader();
   
         reader.onload = function(e) {
+          imagePreview.classList.remove('hidden');
           imagePreview.src = e.target.result;
         };
   
@@ -27,10 +48,13 @@ const ImageUploadForm = () => {
  
   const handleFormSubmit = async (e) => {
     e.preventDefault();
-    
+    // Adicionamos um elemento com a class loader
+    const loader = document.createElement('div');
+    loader.classList.add('loader');
+    document.querySelector('.wrapper-form').appendChild(loader);
+
     const formData = new FormData(e.target);
     
-    console.log(formData);
     try {
       const response = await fetch("http://localhost:8000/apis/insect-images/", {
         method: "POST",
@@ -40,22 +64,9 @@ const ImageUploadForm = () => {
       
 
       const responseData = await response.json();
-      // Console log do response da api
-      console.log(responseData);
-      setResponseMessage(responseData.message);
+      setResponseMessage(responseData.message);     
 
-      //       Object { id: 48, image: "http://localhost:8000/uploaded/images/google138.jpg", uploaded_at: "2023-09-03T23:11:07.933292Z", predicted_class: "Dragonfly" }
-      // index.js:23
-
-      // Gerar um função que a cada 30 segundos verifica se a imagem já foi processada
-      // Usando o URL do http://localhost:8000/apis/analyze-status/ com o email do usuário
-
-
-      // Usar o responseData para gerar uma div com o nome da "predicted_class"
-      // E então, fazer um "toggle" (remover) a classe no-response que esconde o wrapper
-      
-      // Inserir o nome da classe em wrapper result 
-      const response_result = responseData.predicted_class
+      const response_result = responseData.predicted_class // Inserir o nome da classe em wrapper result 
       const wrapper_result = document.querySelector('.wrapper.api-result');
 
       if (wrapper_result != null) {
@@ -66,8 +77,13 @@ const ImageUploadForm = () => {
 
         const result_placeholder = document.querySelector('.result-placeholder');
         result_placeholder.innerText = response_result;
+        // Removemos o loader
+        loader.remove();
+
       } else {
         console.log('wrapper_result is null')
+        // Removemos o loader 
+        loader.remove();
       }
 
 
@@ -75,6 +91,7 @@ const ImageUploadForm = () => {
     } catch (error) {
       console.error(error);
       setResponseMessage('Ocorreu um erro ao enviar a imagem.');
+      loader.remove();
     }
   };
 
@@ -88,16 +105,28 @@ const ImageUploadForm = () => {
             </div>
           </div>
           <form onSubmit={handleFormSubmit} encType="multipart/form-data">
-            <fieldset>
+            {/* <fieldset>
               <legend htmlFor="image">Imagem</legend>
               <img id="image-preview" src="#" alt="" />
               <input id="image-input" type="file" name="image" accept="image/*" />
-            </fieldset>
+            </fieldset> */}
+
             <fieldset>
+              <legend htmlFor="image">Imagem</legend>
+              <div className="wrapper-image-description">
+                <label htmlFor="image-input" className="custom-upload-button" draggable="true">
+                    <img id="image-preview"  className="hidden" src="#" alt=""/>
+                    Clique ou arraste uma imagem para fazer upload
+                </label>
+                <input id="image-input" type="file" name="image" accept="image/*"/>
+                <p className="upload-instructions">Formatos suportados: JPG, PNG, GIF, etc.</p>
+              </div>
+            </fieldset>
+            <fieldset className="hidden">
               <legend htmlFor="email">E-mail</legend>
               <input type="email" name="email" />
             </fieldset>
-            <button className="btn btn-submit" type="submit">Enviar</button>
+            <button className="btn btn-submit" type="submit">Identificar</button>
           </form>
           <div>{responseMessage}</div>
           </div>
