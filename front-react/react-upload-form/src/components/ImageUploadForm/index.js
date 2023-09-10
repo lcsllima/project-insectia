@@ -18,6 +18,7 @@ const ImageUploadForm = () => {
     uploadLabel.addEventListener("drop", function (e) {
         e.preventDefault();
         const file = e.dataTransfer.files[0];
+        fileInput.files = e.dataTransfer.files;
         if (file && file.type.startsWith("image/")) {
             const reader = new FileReader();
             reader.onload = function (e) {
