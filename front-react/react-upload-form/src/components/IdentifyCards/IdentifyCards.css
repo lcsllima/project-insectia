@@ -1,0 +1,43 @@
+
+.card {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-content: center;
+    text-align: center;
+    border: 1px solid #ccc;
+    box-shadow: 0px 0px 29px 0px #ccc;
+    width: 30em;
+    transition: width 0.3s ease;
+
+    background-color: #fff;
+}
+
+.card:hover {
+    width: 32em;
+}
+
+.card-image img {
+    width: 25em;
+    padding: 2em 2em 4em 2em;
+    cursor: pointer;
+}
+
+.card-image img:hover {
+    animation: shake 0.5s ease infinite !important; /* Aplica a animação de agitação */
+}
+
+@keyframes shake {
+    0%, 100% {
+      transform: rotate(0); /* Sem rotação na posição inicial e final */
+    }
+    25% {
+      transform: rotate(-4deg); /* Rotação levemente para a direita */
+    }
+    50% {
+      transform: rotate(4deg); /* Rotação levemente para a esquerda */
+    }
+    75% {
+      transform: rotate(-4deg); /* Rotação levemente para a direita */
+    }
+}
