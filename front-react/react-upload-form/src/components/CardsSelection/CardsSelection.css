@@ -1,15 +1,24 @@
+
 .upload-screen {
     display: none;
     top: 0;
     height: 100vh;
     width: 100vw;
-    background-color: #c6ffb8;
+    /* background-color: #c6ffb8; */
+    /* background-color: #78bd59; */
     z-index: 11;
     position: absolute;
+    opacity: 0;
+
+    visibility: hidden;
+    opacity: 0;
+    transition: visibility 0s, opacity 0.5s linear;
 }
 
 .active {
     display: block;
+    visibility: visible;
+    opacity: 1;
 }
 
 .transition-screen {
@@ -18,7 +27,8 @@
     left: 0;
     width: 100%;
     height: 30%;
-    background-color: #c6ffb8;
+    background-color: #78bd59;
+    /* background-color: #c6ffb8; */
     /* background-image: url('/public/sample-image.jpg'); */
     opacity: 0;
     z-index: 10;
@@ -42,7 +52,7 @@
 .screen-4 {
     top: 91%;
     height: 31%;
-    animation: bars 5s ease-out forwards, color 0s 5s forwards;
+    animation: bars 5s ease-out forwards;
 }
 
 @keyframes bars {
@@ -56,16 +66,105 @@
         transform-origin: left;
         opacity: 1;
     }
-    /* Defina os estilos finais da animação para manter as barras visíveis */
     100% {
         transform: scaleX(1);
         transform-origin: left;
         opacity: 1;
     }
 }
-
+/* 
 @keyframes color {
     to {
         background-color: #c6ffb8;
+    }
+} */
+
+/* 
+.reverse.transition-screen {
+    animation: bars-collapse 3s ease-out forwards;
+}
+
+.reverse.screen-2 {
+    animation: bars-collapse 3.5s ease-out forwards;
+}
+
+.reverse.screen-3 {
+    animation: bars-collapse 4s ease-out forwards;
+}
+
+.reverse.screen-4 {
+    animation: bars-collapse 5s ease-out forwards;
+}
+
+@keyframes bars-collapse {
+    0% {
+        transform: scaleX(0);
+        transform-origin: right;
+        opacity: 1;
+    }
+    50% {
+        transform: scaleX(1);
+        transform-origin: right;
+        opacity: 1;
+    }
+    100% {
+        transform: scaleX(1);
+        transform-origin: right;
+        opacity: 1;
+    }
+} */
+
+
+.transition-screen.reverse-transition {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 30%;
+    background-color: #78bd59;
+    /* background-color: #c6ffb8; */
+    /* background-image: url('/public/sample-image.jpg'); */
+    opacity: 0;
+    z-index: 10;
+    display: none;
+    animation: bars-reverse 3s ease-out forwards;
+    /* Remova a propriedade 'display' desta classe */
+}
+
+.screen-2.reverse-transition {
+    top: 30%;
+    height: 31%;
+    animation: bars-reverse 3.5s ease-out forwards;
+}
+
+.screen-3.reverse-transition {
+    top: 61%;
+    height: 31%;
+    animation: bars-reverse 4s ease-out forwards;
+}
+
+.screen-4.reverse-transition {
+    top: 91%;
+    height: 31%;
+    animation: bars-reverse 5s ease-out forwards;
+}
+
+
+
+@keyframes bars-reverse {
+    100% {
+        transform: scaleX(0);
+        transform-origin: right;
+        opacity: 1;
+    }
+    50% {
+        transform: scaleX(1);
+        transform-origin: right;
+        opacity: 1;
+    }
+    0% {
+        transform: scaleX(1);
+        transform-origin: right;
+        opacity: 1;
     }
 }

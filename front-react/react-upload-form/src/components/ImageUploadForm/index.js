@@ -1,58 +1,17 @@
 import React, { useState } from 'react';
 import './ImageUploadForm.css'
 
-const ImageUploadForm = () => {
+const ImageUploadForm = (props) => {
   const [responseMessage, setResponseMessage] = useState('');
 
-
-  window.onload = function() {
-
-    const uploadLabel = document.querySelector('label[for="image-input"]');
-    const fileInput = document.querySelector('#image-input');
-    const imagePreview = document.getElementById('image-preview');
-  
-    uploadLabel.addEventListener("dragover", function (e) {
-      e.preventDefault();
-    });
-
-    uploadLabel.addEventListener("drop", function (e) {
-        e.preventDefault();
-        const file = e.dataTransfer.files[0];
-        fileInput.files = e.dataTransfer.files;
-        if (file && file.type.startsWith("image/")) {
-            const reader = new FileReader();
-            reader.onload = function (e) {
-                imagePreview.classList.remove('hidden');
-                imagePreview.src = e.target.result;
-            };
-            reader.readAsDataURL(file);
-        }
-    });
-  
-
-  
-    fileInput.addEventListener('change', function() {
-      const file = this.files[0];
-  
-      if(file) {
-        const reader = new FileReader();
-  
-        reader.onload = function(e) {
-          imagePreview.classList.remove('hidden');
-          imagePreview.src = e.target.result;
-        };
-  
-        reader.readAsDataURL(fileInput.files[0]);
-      }
-    });
-  }
- 
+    
   const handleFormSubmit = async (e) => {
     e.preventDefault();
     // Adicionamos um elemento com a class loader
     const loader = document.createElement('div');
     loader.classList.add('loader');
-    document.querySelector('.wrapper-form').appendChild(loader);
+    // document.querySelector('.wrapper-form').appendChild(loader);
+    document.querySelector('.api-result').appendChild(loader);
 
     const formData = new FormData(e.target);
     
@@ -97,12 +56,12 @@ const ImageUploadForm = () => {
   };
 
   return (
-    <div className="main">
+    <div className="main form-main hidden">
         <div className="wrapper-form">
           <div className="wrapper">
             <div className="wrapper-text">
-              <h1>Upload de Imagem</h1>
-              <p>Envie uma imagem de um inseto para o servidor.</p>
+              <h1>{props.title}</h1>
+              <p>{props.description}</p>
             </div>
           </div>
           <form onSubmit={handleFormSubmit} encType="multipart/form-data">
@@ -130,17 +89,16 @@ const ImageUploadForm = () => {
             <button className="btn btn-submit" type="submit">Identificar</button>
           </form>
           <div>{responseMessage}</div>
-          </div>
-          {/* <div className="wallpaper-deepmind"><img id="deepmind-wpp" src="/pexels-google-deepmind-18069365.jpg"></img> </div>
-          */}
-          {/* <div className="form-background"></div> */}
-
           <div className="wrapper api-result no-response">
             <div className="wrapper-text">
               <h3>Se trata de um:</h3>
               <h2 className="result-placeholder"></h2>
             </div>
           </div>
+          </div>
+          {/* <div className="wallpaper-deepmind"><img id="deepmind-wpp" src="/pexels-google-deepmind-18069365.jpg"></img> </div>
+          */}
+          {/* <div className="form-background"></div> */}
     </div>
   );
 };
