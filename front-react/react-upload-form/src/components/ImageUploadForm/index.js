@@ -37,6 +37,8 @@ const ImageUploadForm = (props) => {
 
         const result_placeholder = document.querySelector('.result-placeholder');
         result_placeholder.innerText = response_result;
+
+        console.log(result_placeholder);
         // Removemos o loader
         loader.remove();
 
