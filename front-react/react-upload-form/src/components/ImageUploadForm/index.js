@@ -28,26 +28,39 @@ const ImageUploadForm = (props) => {
 
       const response_result = responseData.predicted_class // Inserir o nome da classe em wrapper result 
       const wrapper_result = document.querySelector('.wrapper.api-result');
-
+      
       if (wrapper_result != null) {
         // Se o response já não foi removido
-        if(wrapper_result.classList.contains('no-response')) {
+        if (wrapper_result.classList.contains('no-response')) {
           wrapper_result.classList.toggle('no-response');
         }
-
+      
         const result_placeholder = document.querySelector('.result-placeholder');
         result_placeholder.innerText = response_result;
+      
+        // Faremos um GET em http://localhost:8080/insect-content/{response_result}
+        // e retornaremos o conteúdo do inseto
+        const insect_content = await fetch(`http://localhost:8000/apis/wikipedia-scrape?title=${response_result}`);
+        
+        // Salvamos o titulo do inseto
+        result_placeholder.innerHTML = `<a href="https://pt.wikipedia.org/wiki/${response_result}" target="_blank">${response_result}</a>`; 
 
-        console.log(result_placeholder);
+        if (insect_content.ok) {
+          const insect_content_data = await insect_content.json();
+          const insect_content_text = insect_content_data.content;
+
+          result_placeholder.innerHTML += insect_content_text;
+        } else {
+          result_placeholder.innerText += 'Erro ao obter o conteúdo do inseto.';
+        }
+      
         // Removemos o loader
         loader.remove();
-
       } else {
-        console.log('wrapper_result is null')
-        // Removemos o loader 
+        console.log('wrapper_result is null');
+        // Removemos o loader
         loader.remove();
       }
-
 
       
     } catch (error) {
@@ -93,7 +106,7 @@ const ImageUploadForm = (props) => {
           <div>{responseMessage}</div>
           <div className="wrapper api-result no-response">
             <div className="wrapper-text">
-              <h3>Se trata de um:</h3>
+              <h3>Identificado:</h3>
               <h2 className="result-placeholder"></h2>
             </div>
           </div>

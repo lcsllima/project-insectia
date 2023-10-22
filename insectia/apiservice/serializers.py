@@ -1,5 +1,5 @@
 from rest_framework import serializers
-from .models import Insect, InsectImage, AnalyzeStatus
+from .models import Insect, InsectImage, AnalyzeStatus, ScrapedContent
 import threading
 
 import numpy as np
@@ -104,3 +104,8 @@ class AnalyzeStatusSerializer(serializers.ModelSerializer):
         fields['status'] = serializers.CharField(max_length=100)
         fields['email'] = serializers.CharField(max_length=100)
         return fields
+
+class ScrapedContentSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = ScrapedContent
+        fields = '__all__'

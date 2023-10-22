@@ -243,6 +243,9 @@ Novo CSS
     color: #fff;
 }
 
+a {
+    color: #008891;
+}
 .wrapper.api-result .wrapper-text {
     display: flex;
     flex-direction: column;
@@ -250,7 +253,7 @@ Novo CSS
     word-break: normal;
     
     max-height: 16em;
-    width: 14em;
+    width: 28em;
 
     overflow: scroll;
 }

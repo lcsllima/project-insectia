@@ -18,3 +18,11 @@ class AnalyzeStatus(models.Model):
     email = models.CharField(max_length=255, null=True)  # pode ser nulo
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
+
+class ScrapedContent(models.Model):
+    title = models.CharField(max_length=255, unique=True)
+    content = models.TextField()
+    record_time = models.DateTimeField(auto_now=True)
+
+    def __str__(self):
+        return self.title
